@@ -48,10 +48,8 @@ let Q192 = 2 ** 192
 export function sqrtPriceX96ToTokenPrices(sqrtPriceX96: BigInt, token0: Token, token1: Token): BigDecimal[] {
   let num = sqrtPriceX96.times(sqrtPriceX96).toBigDecimal()
   let denom = BigDecimal.fromString(Q192.toString())
-  let price1 = num
-    .div(denom)
-    .times(exponentToBigDecimal(token0.decimals))
-    .div(exponentToBigDecimal(token1.decimals))
+  let temp = safeDiv(num, denom).times(exponentToBigDecimal(token0.decimals))
+  let price1 = safeDiv(temp, exponentToBigDecimal(token1.decimals))
 
   let price0 = safeDiv(BigDecimal.fromString('1'), price1)
   return [price0, price1]
@@ -63,7 +61,6 @@ export function getEthPriceInUSD(): BigDecimal {
   if (usdcPool !== null) {
     return usdcPool.token0Price
   } else {
-    //
     return BigInt.fromI32(3922).toBigDecimal();
   }
 }

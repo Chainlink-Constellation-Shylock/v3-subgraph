@@ -18,7 +18,6 @@ import {
   updateUserSwapData
 } from './utils/user'
 import { createTick, feeTierToTickSpacing } from './utils/tick'
-import { log } from 'matchstick-as'
 
 export function handleInitialize(event: Initialize): void {
   // update pool sqrt price and tick
@@ -330,14 +329,21 @@ export function handleSwap(event: SwapEvent): void {
   let amount1USD = amount1ETH.times(bundle.ethPriceUSD)
 
   // get amount that should be tracked only - div 2 because cant count both input and output as volume
-  let amountTotalUSDTracked = getTrackedAmountUSD(amount0Abs, token0 as Token, amount1Abs, token1 as Token).div(
+  let amountTotalUSDTracked = safeDiv(
+    getTrackedAmountUSD(amount0Abs, token0 as Token, amount1Abs, token1 as Token),
     BigDecimal.fromString('2')
   )
   let amountTotalETHTracked = safeDiv(amountTotalUSDTracked, bundle.ethPriceUSD)
-  let amountTotalUSDUntracked = amount0USD.plus(amount1USD).div(BigDecimal.fromString('2'))
+  let amountTotalUSDUntracked = safeDiv(amount0USD.plus(amount1USD), BigDecimal.fromString('2'))
 
-  let feesETH = amountTotalETHTracked.times(pool.feeTier.toBigDecimal()).div(BigDecimal.fromString('1000000'))
-  let feesUSD = amountTotalUSDTracked.times(pool.feeTier.toBigDecimal()).div(BigDecimal.fromString('1000000'))
+  let feesETH = safeDiv(
+    amountTotalETHTracked.times(pool.feeTier.toBigDecimal()),
+    BigDecimal.fromString('1000000')
+  )
+  let feesUSD = safeDiv(
+    amountTotalUSDTracked.times(pool.feeTier.toBigDecimal()),
+    BigDecimal.fromString('1000000')
+  )
 
   // global updates
   factory.txCount = factory.txCount.plus(ONE_BI)

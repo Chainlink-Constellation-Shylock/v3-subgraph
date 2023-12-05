@@ -14,7 +14,10 @@ import { fetchTokenSymbol, fetchTokenName, fetchTokenTotalSupply, fetchTokenDeci
 
 export function handlePoolCreated(event: PoolCreatedEvent): void {
   // temp fix
-  if (event.params.pool == Address.fromHexString('0x8fe8d9bb8eeba3ed688069c3d6b556c9ca258248')) {
+  if (
+    event.params.pool == Address.fromHexString('0x8fe8d9bb8eeba3ed688069c3d6b556c9ca258248') ||
+    event.params.pool == Address.fromHexString('0x1C74Dde716D3f2a1dF5097B7c2543C5D97cfa4D3')
+  ) {
     return
   }
 
@@ -58,7 +61,7 @@ export function handlePoolCreated(event: PoolCreatedEvent): void {
     // bail if we couldn't figure out the decimals
     if (decimals === null) {
       log.debug('mybug the decimal on token 0 was null', [])
-      throw Error('mybug the decimal on token 0 was null')
+      return
     }
 
     token0.decimals = decimals
@@ -84,7 +87,7 @@ export function handlePoolCreated(event: PoolCreatedEvent): void {
     // bail if we couldn't figure out the decimals
     if (decimals === null) {
       log.debug('mybug the decimal on token 0 was null', [])
-      throw Error('mybug the decimal on token 0 was null')
+      return
     }
     token1.decimals = decimals
     token1.derivedETH = ZERO_BD

@@ -10,7 +10,6 @@ import {
 } from '../../generated/schema'
 import {
   Burn as BurnEvent,
-  Flash as FlashEvent,
   Mint as MintEvent,
   Swap as SwapEvent
 } from '../../generated/templates/Pool/Pool'
@@ -77,7 +76,6 @@ export function updateUserSwapData(
 ): User {
   let userAddress = event.params.sender.toHexString()
   let user = User.load(userAddress)
-  let timestamp = event.block.timestamp
   if (user === null) {
     user = new User(userAddress)
     user.volumeETH = ZERO_BD
