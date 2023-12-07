@@ -55,7 +55,7 @@ export function handleMint(event: MintEvent): void {
   let bundle = Bundle.load('1')
   if (bundle === null) {
     bundle = new Bundle('1')
-    bundle.ethPriceUSD = ZERO_BD
+    bundle.ethPriceUSD = getEthPriceInUSD()
     bundle.save()
   }
   let poolAddress = event.address.toHexString()

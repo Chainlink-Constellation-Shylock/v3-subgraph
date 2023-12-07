@@ -80,13 +80,7 @@ export function fetchTokenDecimals(tokenAddress: Address): BigInt {
   if (!decimalResult.reverted) {
     decimalValue = decimalResult.value
   } else {
-    // try with the static definition
-    let staticTokenDefinition = StaticTokenDefinition.fromAddress(tokenAddress)
-    if(staticTokenDefinition != null) {
-      return staticTokenDefinition.decimals
-    } else {
-      return BigInt.fromI32(18)
-    }
+    return BigInt.fromI32(18)
   }
 
   if (decimalValue == 0) {
